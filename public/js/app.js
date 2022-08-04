@@ -19481,10 +19481,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "bg-gray-700 text-white text-3xl"
+  "class": "justify-center mt-10 w-full"
 };
+
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"flex-col max-w-4xl mx-auto space-y-8 bg-gray-300 py-12 px-8\"><h1 class=\"text-4xl text-center tracking-tight font-extrabold text-gray-900 sm:text-5xl\"><span class=\"block xl:inline\">NASA Search</span></h1><div class=\"flex items-center\"><input type=\"text\" class=\"rounded-l-sm w-full h-12 px-4 text-xl\" placeholder=\"Search for the stars...\"><span><button class=\"px-4 bg-indigo-600 h-12 text-white font-medium\">Search</button></span></div><div class=\"flex justify-evenly items-center text-2xl\"><label><input type=\"checkbox\" value=\"images\"> Images </label><label><input type=\"checkbox\" value=\"audio\"> Audio </label></div></div>", 1);
+
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12 px-8"
+}, " Results display here! ", -1
+/* HOISTED */
+);
+
 function render(_ctx, _cache) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, "Hello World!");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results "), _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results ")]);
 }
 
 /***/ }),
