@@ -19,7 +19,9 @@
          <!-- Scripts -->
          <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
-    <body class="antialiased" id="app">
+    <body class="antialiased bg-gray-100" id="app">
         <search></search>
     </body>
 </html>
+
+

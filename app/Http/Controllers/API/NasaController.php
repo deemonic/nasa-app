@@ -6,20 +6,19 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NasaSearchRequest;
+use Illuminate\Support\Facades\Validator;
 
 class NasaController extends Controller
 {
-    public function search(Request $request)
+    public function search(NasaSearchRequest $request)
     {
-        dd($request);
-        // Validate the request
-        //$request->validate();
-
+        
         // Call the NASA api
         $client = new Client();
         $res = $client->request('GET', 'https://images-api.nasa.gov/search', [
             'query' => [
-                'q' => $request->q
+                'q' => $request->q,
+                'media_type' => isset($request->media_type) ? $request->media_type : '',
             ],
             
         ]);

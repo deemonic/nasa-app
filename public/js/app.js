@@ -9901,7 +9901,7 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
         const Component = instance.type;
         // explicit self name has highest priority
         if (type === COMPONENTS) {
-            const selfName = getComponentName(Component);
+            const selfName = getComponentName(Component, false /* do not include inferred name to avoid breaking existing code */);
             if (selfName &&
                 (selfName === name ||
                     selfName === (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize)(name) ||
@@ -11582,7 +11582,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
                         setupState[ref] = value;
                     }
                 }
-                else if ((0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_0__.isRef)(ref)) {
+                else if (_isRef) {
                     ref.value = value;
                     if (rawRef.k)
                         refs[rawRef.k] = value;
@@ -11622,11 +11622,13 @@ function createHydrationFunctions(rendererInternals) {
                     `Performing full mount instead.`);
             patch(null, vnode, container);
             flushPostFlushCbs();
+            container._vnode = vnode;
             return;
         }
         hasMismatch = false;
         hydrateNode(container.firstChild, vnode, null, null, null);
         flushPostFlushCbs();
+        container._vnode = vnode;
         if (hasMismatch && !false) {
             // this error should show up in production
             console.error(`Hydration completed but contains mismatches.`);
@@ -11677,7 +11679,7 @@ function createHydrationFunctions(rendererInternals) {
                 }
                 break;
             case Static:
-                if (domType !== 1 /* ELEMENT */) {
+                if (domType !== 1 /* ELEMENT */ && domType !== 3 /* TEXT */) {
                     nextNode = onMismatch();
                 }
                 else {
@@ -11688,7 +11690,10 @@ function createHydrationFunctions(rendererInternals) {
                     const needToAdoptContent = !vnode.children.length;
                     for (let i = 0; i < vnode.staticCount; i++) {
                         if (needToAdoptContent)
-                            vnode.children += nextNode.outerHTML;
+                            vnode.children +=
+                                nextNode.nodeType === 1 /* ELEMENT */
+                                    ? nextNode.outerHTML
+                                    : nextNode.data;
                         if (i === vnode.staticCount - 1) {
                             vnode.anchor = nextNode;
                         }
@@ -14405,10 +14410,10 @@ function getExposeProxy(instance) {
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
-function getComponentName(Component) {
+function getComponentName(Component, includeInferred = true) {
     return (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isFunction)(Component)
         ? Component.displayName || Component.name
-        : Component.name;
+        : Component.name || (includeInferred && Component.__name);
 }
 /* istanbul ignore next */
 function formatComponentName(instance, Component, isRoot = false) {
@@ -14856,7 +14861,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.36";
+const version = "3.2.37";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -14866,7 +14871,7 @@ const _ssrUtils = {
     normalizeVNode
 };
 /**
- * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
+ * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
  * @internal
  */
 const ssrUtils = (_ssrUtils );
@@ -19467,6 +19472,59 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Search.vue?vue&type=script&lang=js":
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Search.vue?vue&type=script&lang=js ***!
+  \************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      searchTerm: null,
+      imageChecked: false,
+      audioChecked: false,
+      errors: [],
+      searchResults: [],
+      metaData: [],
+      links: []
+    };
+  },
+  methods: {
+    checkForm: function checkForm() {
+      this.errors = [];
+
+      if (this.searchTerm == null || this.searchTerm == "") {
+        this.errors.push('Please enter a search term');
+      }
+
+      if (this.imageChecked == false && this.audioChecked == false) {
+        this.errors.push('Please check either a image or audio');
+      }
+    },
+    search: function search() {
+      var _this = this;
+
+      this.checkForm();
+
+      if (this.errors.length == 0) {
+        axios.get('/api/search?q=' + this.searchTerm + '&media_type=image').then(function (response) {
+          _this.searchResults = response.data.collection.items;
+          _this.metaData = response.data.collection.metadata;
+          _this.links = response.data.collection.links;
+        });
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Search.vue?vue&type=template&id=5026ffd3":
 /*!****************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Search.vue?vue&type=template&id=5026ffd3 ***!
@@ -19481,19 +19539,124 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "justify-center mt-10 w-full"
+  "class": "justify-center w-full"
+};
+var _hoisted_2 = {
+  "class": "bg-image"
+};
+var _hoisted_3 = {
+  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12 px-8"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"flex-col max-w-4xl mx-auto space-y-8 bg-gray-300 py-12 px-8\"><h1 class=\"text-4xl text-center tracking-tight font-extrabold text-gray-900 sm:text-5xl\"><span class=\"block xl:inline\">NASA Search</span></h1><div class=\"flex items-center\"><input type=\"text\" class=\"rounded-l-sm w-full h-12 px-4 text-xl\" placeholder=\"Search for the stars...\"><span><button class=\"px-4 bg-indigo-600 h-12 text-white font-medium\">Search</button></span></div><div class=\"flex justify-evenly items-center text-2xl\"><label><input type=\"checkbox\" value=\"images\"> Images </label><label><input type=\"checkbox\" value=\"audio\"> Audio </label></div></div>", 1);
-
-var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12 px-8"
-}, " Results display here! ", -1
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", {
+  "class": "text-4xl text-center tracking-tight font-extrabold text-gray-900 sm:text-5xl"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  "class": "block xl:inline text-white"
+}, "NASA Search")], -1
 /* HOISTED */
 );
 
-function render(_ctx, _cache) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results "), _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results ")]);
+var _hoisted_5 = {
+  "class": "flex items-center"
+};
+var _hoisted_6 = {
+  "class": "flex justify-evenly items-center text-2xl text-white"
+};
+var _hoisted_7 = {
+  "class": "flex items-center"
+};
+
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Image ");
+
+var _hoisted_9 = {
+  "class": "flex items-center"
+};
+
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Audio ");
+
+var _hoisted_11 = {
+  key: 0,
+  "class": "flex-col max-w-4xl mx-auto py-6 mt-4 px-8 bg-red-200 border border-red-500 rounded-lg shadow"
+};
+
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("b", null, "Please correct the following error(s):", -1
+/* HOISTED */
+);
+
+var _hoisted_13 = {
+  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12"
+};
+var _hoisted_14 = {
+  key: 0,
+  "class": "flex font-semibold"
+};
+var _hoisted_15 = {
+  "class": "grid grid-cols-4 gap-4"
+};
+var _hoisted_16 = {
+  "class": "rounded shadow-lg overflow-hidden"
+};
+var _hoisted_17 = ["src"];
+
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  "class": "px-4 w-full bg-indigo-600 h-8 text-white font-medium"
+}, "View", -1
+/* HOISTED */
+);
+
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+      return $data.searchTerm = $event;
+    }),
+    type: "text",
+    "class": "rounded-l-sm w-full h-12 px-4 text-xl",
+    placeholder: "Search for the stars..."
+  }, null, 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.searchTerm]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.search();
+    }),
+    "class": "px-6 bg-indigo-600 h-12 text-white text-xl font-medium"
+  }, "Search")])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return $data.imageChecked = $event;
+    }),
+    "class": "w-6 h-6 mr-2",
+    type: "checkbox"
+  }, null, 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $data.imageChecked]]), _hoisted_8]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+      return $data.audioChecked = $event;
+    }),
+    "class": "w-6 h-6 mr-2",
+    type: "checkbox"
+  }, null, 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $data.audioChecked]]), _hoisted_10])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Errors "), $data.errors.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.errors, function (error) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(error), 1
+    /* TEXT */
+    );
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    key: 1
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Errors "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$data.searchResults.length != 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, " Total Results: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.metaData.total_hits), 1
+  /* TEXT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.searchResults, function (result) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+      src: result.links[0].href,
+      "class": "object-cover h-48 object-center"
+    }, null, 8
+    /* PROPS */
+    , _hoisted_17), _hoisted_18])]);
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))])])], 2112
+  /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
+  )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results ")]);
 }
 
 /***/ }),
@@ -37002,17 +37165,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Search_vue_vue_type_template_id_5026ffd3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Search.vue?vue&type=template&id=5026ffd3 */ "./resources/js/components/Search.vue?vue&type=template&id=5026ffd3");
-/* harmony import */ var C_Projects_nasa_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var _Search_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Search.vue?vue&type=script&lang=js */ "./resources/js/components/Search.vue?vue&type=script&lang=js");
+/* harmony import */ var C_Projects_nasa_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
-const script = {}
+
+
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_Projects_nasa_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__["default"])(script, [['render',_Search_vue_vue_type_template_id_5026ffd3__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/Search.vue"]])
+const __exports__ = /*#__PURE__*/(0,C_Projects_nasa_app_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_Search_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Search_vue_vue_type_template_id_5026ffd3__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/Search.vue"]])
 /* hot reload */
 if (false) {}
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
+/***/ "./resources/js/components/Search.vue?vue&type=script&lang=js":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Search.vue?vue&type=script&lang=js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Search_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Search_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Search.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Search.vue?vue&type=script&lang=js");
+ 
 
 /***/ }),
 

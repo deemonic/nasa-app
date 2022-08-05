@@ -13,7 +13,7 @@ class NasaSearchRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class NasaSearchRequest extends FormRequest
     public function rules()
     {
         return [
-            //'q' => 'required|min:1'
+            'q' => 'required',
         ];
     }
+
 }
