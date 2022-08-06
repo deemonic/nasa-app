@@ -11,7 +11,7 @@
 
                     <div class="flex items-center">
 
-                        <input v-model="searchTerm" type="text" class="rounded-l-sm w-full h-12 px-4 text-xl" placeholder="Search for the stars..." />
+                        <input v-model="searchTerm" type="text" class="rounded-l-sm w-full h-12 px-4 text-xl focus:outline-none focus:ring focus:ring-orange-300" placeholder="Search for the stars..." />
 
                         <span>
                             <button v-on:click="search()" class="px-6 bg-indigo-600 h-12 text-white text-xl font-medium">Search</button>
@@ -59,11 +59,14 @@
 
                     <div v-for="result in searchResults">
 
-                        <div class="rounded shadow-lg overflow-hidden">
+                        <div class="rounded shadow-xl overflow-hidden">
 
                             <img :src="result.links[0].href" class="object-cover h-48 object-center" />
                             
-                            <button class="px-4 w-full bg-indigo-600 h-8 text-white font-medium">View</button>
+                            <router-link class="px-4 w-full bg-indigo-600 h-8 text-white font-medium" 
+                                        :to="{ name: 'asset', params: { id: result.data[0].nasa_id }}">
+                                View
+                            </router-link>
 
                         </div>
     
