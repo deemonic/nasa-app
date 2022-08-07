@@ -14,9 +14,5 @@ use App\Http\Controllers\API\NasaController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/search', [NasaController::class, 'search']);
+Route::get('/asset/{id}', [NasaController::class, 'show']);

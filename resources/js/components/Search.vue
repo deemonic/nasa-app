@@ -61,11 +61,23 @@
 
                         <div class="rounded shadow-xl overflow-hidden">
 
-                            <img :src="result.links[0].href" class="object-cover h-48 object-center" />
-                            
+                            <div v-if="'links' in result">
+
+                                <img :src="result.links[0].href" class="object-cover h-48" />
+
+                            </div>
+
+                            <div v-else class="">
+
+                                <p class="px-6 py-8 text-sm h-48">{{ result.data[0].description.substring(0, 100) + '...' }}</p>
+
+                            </div>
+
                             <router-link class="px-4 w-full bg-indigo-600 h-8 text-white font-medium" 
-                                        :to="{ name: 'asset', params: { id: result.data[0].nasa_id }}">
+                                :to="{ name: 'asset', params: { id: result.data[0].nasa_id }}">
+
                                 View
+
                             </router-link>
 
                         </div>
@@ -80,7 +92,6 @@
         </main>
 
 </template>
-
 
         <script>
 
@@ -110,13 +121,28 @@
                                 this.errors.push('Please check either a image or audio');
                         }
                     },
+                    getMediaTypes() {
+
+                        let mediaTypes = [];
+
+                        if(this.imageChecked) {
+                            mediaTypes.push('image');
+                        }
+
+                        if(this.audioChecked) {
+                            mediaTypes.push('audio');
+                        }
+
+                        return mediaTypes.toString();
+
+                    },
                     search() {
 
                         this.checkForm()
 
                         if(this.errors.length == 0) {
                             
-                            axios.get('/api/search?q=' + this.searchTerm + '&media_type=image')
+                            axios.get('/api/search?q=' + this.searchTerm + '&media_type=' + this.getMediaTypes())
                                 .then((response) => {
                                     this.searchResults = response.data.collection.items
                                     this.metaData = response.data.collection.metadata

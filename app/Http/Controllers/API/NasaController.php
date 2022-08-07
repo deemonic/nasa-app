@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\API;
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NasaSearchRequest;
-use Illuminate\Support\Facades\Validator;
 
 class NasaController extends Controller
 {
+    /**
+     * Get and return reults from a search term 
+     * and media type.
+     * 
+     * @return json
+     */
     public function search(NasaSearchRequest $request)
     {
-        
-        // Call the NASA api
         $client = new Client();
+        
         $res = $client->request('GET', 'https://images-api.nasa.gov/search', [
             'query' => [
                 'q' => $request->q,
@@ -28,9 +31,28 @@ class NasaController extends Controller
         $res->getHeader('content-type')[0];
 
         $body = json_decode($res->getBody());
-        
-        // Return the response
+
         return response()->json(($body), 200);
         
+    }
+
+    /**
+     * Get and return the asset by id.
+     * 
+     * @return json
+     */
+    public function show($id)
+    {
+         $client = new Client();
+
+         $res = $client->request('GET', 'https://images-api.nasa.gov/asset/' . $id);
+ 
+         $res->getStatusCode();
+  
+         $res->getHeader('content-type')[0];
+ 
+         $body = json_decode($res->getBody());
+         
+         return response()->json(($body), 200);
     }
 }

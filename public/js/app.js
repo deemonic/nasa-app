@@ -19764,13 +19764,26 @@ __webpack_require__.r(__webpack_exports__);
         this.errors.push('Please check either a image or audio');
       }
     },
+    getMediaTypes: function getMediaTypes() {
+      var mediaTypes = [];
+
+      if (this.imageChecked) {
+        mediaTypes.push('image');
+      }
+
+      if (this.audioChecked) {
+        mediaTypes.push('audio');
+      }
+
+      return mediaTypes.toString();
+    },
     search: function search() {
       var _this = this;
 
       this.checkForm();
 
       if (this.errors.length == 0) {
-        axios.get('/api/search?q=' + this.searchTerm + '&media_type=image').then(function (response) {
+        axios.get('/api/search?q=' + this.searchTerm + '&media_type=' + this.getMediaTypes()).then(function (response) {
           _this.searchResults = response.data.collection.items;
           _this.metaData = response.data.collection.metadata;
           _this.links = response.data.collection.links;
@@ -19872,9 +19885,19 @@ var _hoisted_15 = {
 var _hoisted_16 = {
   "class": "rounded shadow-xl overflow-hidden"
 };
-var _hoisted_17 = ["src"];
+var _hoisted_17 = {
+  key: 0
+};
+var _hoisted_18 = ["src"];
+var _hoisted_19 = {
+  key: 1,
+  "class": ""
+};
+var _hoisted_20 = {
+  "class": "px-6 py-8 text-sm h-48"
+};
 
-var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" View ");
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" View ");
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
@@ -19920,12 +19943,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Errors "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$data.searchResults.length != 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, " Total Results: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.metaData.total_hits), 1
   /* TEXT */
   )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.searchResults, function (result) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, ['links' in result ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
       src: result.links[0].href,
-      "class": "object-cover h-48 object-center"
+      "class": "object-cover h-48"
     }, null, 8
     /* PROPS */
-    , _hoisted_17), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    , _hoisted_18)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(result.data[0].description.substring(0, 100) + '...'), 1
+    /* TEXT */
+    )])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       "class": "px-4 w-full bg-indigo-600 h-8 text-white font-medium",
       to: {
         name: 'asset',
@@ -19935,7 +19960,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [_hoisted_18];
+        return [_hoisted_21];
       }),
       _: 2
       /* DYNAMIC */
