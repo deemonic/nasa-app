@@ -72,7 +72,7 @@
                                 <p class="px-6 py-8 text-sm h-48">{{ result.data[0].description.substring(0, 100) + '...' }}</p>
 
                             </div>
-
+                            <button @click="assetStore.store(result.data[0])">test</button>
                             <router-link class="px-4 w-full bg-indigo-600 h-8 text-white font-medium" 
                                 :to="{ name: 'asset', params: { id: result.data[0].nasa_id }}">
 
@@ -93,65 +93,65 @@
 
 </template>
 
-        <script>
+<script>
 
-            export default {
-        
-                data() {
-                    return {
-                        searchTerm: null,
-                        imageChecked: false,
-                        audioChecked: false,
-                        errors: [],
-                        searchResults: [],
-                        metaData: [],
-                        links: []
-                    }
-                },
-                methods: {
-                    checkForm() {
+import { useAssetStore } from '../stores/assetStore';
 
-                        this.errors = [];
+export default {
 
-                        if(this.searchTerm == null || this.searchTerm == "") {
-                            this.errors.push('Please enter a search term');
-                        }
+    setup() {
+        const assetStore = useAssetStore()
 
-                        if(this.imageChecked == false && this.audioChecked == false) {
-                                this.errors.push('Please check either a image or audio');
-                        }
-                    },
-                    getMediaTypes() {
+        return {
+            assetStore
+        }
+    },
+    data() {
+        return {
+            searchTerm: null,
+            imageChecked: false,
+            audioChecked: false,
+            errors: [],
+            searchResults: [],
+            metaData: [],
+            links: [],
 
-                        let mediaTypes = [];
-
-                        if(this.imageChecked) {
-                            mediaTypes.push('image');
-                        }
-
-                        if(this.audioChecked) {
-                            mediaTypes.push('audio');
-                        }
-
-                        return mediaTypes.toString();
-
-                    },
-                    search() {
-
-                        this.checkForm()
-
-                        if(this.errors.length == 0) {
-                            
-                            axios.get('/api/search?q=' + this.searchTerm + '&media_type=' + this.getMediaTypes())
-                                .then((response) => {
-                                    this.searchResults = response.data.collection.items
-                                    this.metaData = response.data.collection.metadata
-                                    this.links = response.data.collection.links
-                                })
-                        }
-                    }
-                },
-               
+        };
+    },
+    methods: {
+        checkForm() {
+            this.errors = [];
+            if (this.searchTerm == null || this.searchTerm == "") {
+                this.errors.push("Please enter a search term");
             }
-        
-        </script>
+            if (this.imageChecked == false && this.audioChecked == false) {
+                this.errors.push("Please check either a image or audio");
+            }
+        },
+        getMediaTypes() {
+            let mediaTypes = [];
+            if (this.imageChecked) {
+                mediaTypes.push("image");
+            }
+            if (this.audioChecked) {
+                mediaTypes.push("audio");
+            }
+            return mediaTypes.toString();
+        },
+        search() {
+            this.checkForm();
+            if (this.errors.length == 0) {
+                axios.get("/api/search?q=" + this.searchTerm + "&media_type=" + this.getMediaTypes())
+                    .then((response) => {
+                    this.searchResults = response.data.collection.items;
+                    this.metaData = response.data.collection.metadata;
+                    this.links = response.data.collection.links;
+                });
+            }
+        },
+
+    },
+
+}
+
+</script>

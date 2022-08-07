@@ -20,6 +20,7 @@
         "webpack": "^5.74.0"
     },
     "dependencies": {
+        "pinia": "^2.0.17",
         "vue": "^3.2.36",
         "vue-router": "^4.1.3"
     }
