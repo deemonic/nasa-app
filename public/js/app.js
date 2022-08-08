@@ -19740,23 +19740,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _stores_searchStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../stores/searchStore */ "./resources/js/stores/searchStore.js");
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  setup: function setup() {
+    var searchStore = (0,_stores_searchStore__WEBPACK_IMPORTED_MODULE_0__.useSearchStore)();
+    return {
+      searchStore: searchStore
+    };
+  },
   data: function data() {
     return {
       errors: [],
-      assetData: []
+      asset: null
     };
   },
-  mounted: function mounted() {},
-  methods: {
-    getAsset: function getAsset() {
-      var _this = this;
-
-      axios.get('/api/asset/' + this.$route.params.id).then(function (response) {
-        _this.assetData = response.data;
-      });
-    }
-  }
+  mounted: function mounted() {
+    this.asset = this.searchStore.getItem();
+    console.log(this.asset);
+  },
+  methods: {}
 });
 
 /***/ }),
@@ -19772,13 +19775,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _stores_assetStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../stores/assetStore */ "./resources/js/stores/assetStore.js");
+/* harmony import */ var _stores_searchStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../stores/searchStore */ "./resources/js/stores/searchStore.js");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   setup: function setup() {
-    var assetStore = (0,_stores_assetStore__WEBPACK_IMPORTED_MODULE_0__.useAssetStore)();
+    var searchStore = (0,_stores_searchStore__WEBPACK_IMPORTED_MODULE_0__.useSearchStore)();
     return {
-      assetStore: assetStore
+      searchStore: searchStore
     };
   },
   data: function data() {
@@ -19824,7 +19827,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.errors.length == 0) {
         axios.get("/api/search?q=" + this.searchTerm + "&media_type=" + this.getMediaTypes()).then(function (response) {
-          _this.searchResults = response.data.collection.items;
+          _this.searchStore.storeResults(response.data.collection.items);
+
+          _this.searchResults = _this.searchStore.getResults();
           _this.metaData = response.data.collection.metadata;
           _this.links = response.data.collection.links;
         });
@@ -19851,15 +19856,22 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "justify-center w-full"
 };
-
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12"
-}, " Asset ", -1
-/* HOISTED */
-);
-
+var _hoisted_2 = {
+  "class": "bg-image"
+};
+var _hoisted_3 = {
+  "class": "flex-col max-w-4xl mx-auto space-y-8 py-12 px-8"
+};
+var _hoisted_4 = {
+  "class": "text-4xl text-center tracking-tight font-extrabold text-gray-900 sm:text-5xl"
+};
+var _hoisted_5 = {
+  "class": "block xl:inline text-white"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search Results ")]);
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.asset), 1
+  /* TEXT */
+  )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search")])]);
 }
 
 /***/ }),
@@ -19946,11 +19958,12 @@ var _hoisted_19 = {
 var _hoisted_20 = {
   "class": "px-6 py-8 text-sm h-48"
 };
-var _hoisted_21 = ["onClick"];
 
-var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" View ");
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" View ");
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _this = this;
+
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("main", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Nasa Search "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -20001,13 +20014,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* PROPS */
     , _hoisted_18)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(result.data[0].description.substring(0, 100) + '...'), 1
     /* TEXT */
-    )])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    )])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       onClick: function onClick($event) {
-        return $setup.assetStore.store(result.data[0]);
-      }
-    }, "test", 8
-    /* PROPS */
-    , _hoisted_21), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+        return _this.searchStore.storeItem(result.data[0]);
+      },
       "class": "px-4 w-full bg-indigo-600 h-8 text-white font-medium",
       to: {
         name: 'asset',
@@ -20017,14 +20027,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [_hoisted_22];
+        return [_hoisted_21];
       }),
       _: 2
       /* DYNAMIC */
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["to"])])]);
+    , ["onClick", "to"])])]);
   }), 256
   /* UNKEYED_FRAGMENT */
   ))])])], 2112
@@ -20106,32 +20116,40 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/stores/assetStore.js":
-/*!*******************************************!*\
-  !*** ./resources/js/stores/assetStore.js ***!
-  \*******************************************/
+/***/ "./resources/js/stores/searchStore.js":
+/*!********************************************!*\
+  !*** ./resources/js/stores/searchStore.js ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "useAssetStore": () => (/* binding */ useAssetStore)
+/* harmony export */   "useSearchStore": () => (/* binding */ useSearchStore)
 /* harmony export */ });
 /* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.esm-browser.js");
 
-var useAssetStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)("assetStore", {
-  // State
+var useSearchStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)("searchStore", {
   state: function state() {
     return {
-      asset: null
+      results: [],
+      item: null
     };
   },
   actions: {
-    store: function store(data) {
-      this.asset = data;
+    storeResults: function storeResults(results) {
+      this.results = results;
+    },
+    getResults: function getResults() {
+      return this.results;
+    },
+    storeItem: function storeItem(item) {
+      this.item = item;
+    },
+    getItem: function getItem() {
+      return this.item;
     }
-  } // Getters
-
+  }
 });
 
 /***/ }),
