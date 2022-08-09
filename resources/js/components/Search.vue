@@ -3,31 +3,31 @@
            
             <div class="bg-image">
                 <!-- Nasa Search -->
-                <div class="flex-col max-w-4xl mx-auto space-y-8 py-12 px-8">
+                <div class="flex-col max-w-4xl mx-auto space-y-8 py-12 px-4 lg:px-0">
                     
                     <h1 class="text-4xl text-center tracking-tight font-extrabold text-gray-900 sm:text-5xl">
                         <span class="block xl:inline text-white">NASA Search</span>
                     </h1>
 
-                    <div class="flex items-center">
+                    <div class="sm:flex sm:items-center sm:space-y-0">
 
-                        <input v-model="searchTerm" type="text" class="rounded-l-sm w-full h-12 px-4 text-xl focus:outline-none focus:ring focus:ring-orange-300" placeholder="Search for the stars..." />
+                        <input v-model="searchStore.searchTerm" type="text" class="mb-2 sm:mb-0 rounded-l-sm w-full h-12 px-4 text-xl focus:outline-none focus:ring focus:ring-orange-300" placeholder="Search for the stars..." />
 
                         <span>
-                            <button v-on:click="search()" class="px-6 bg-indigo-600 h-12 text-white text-xl font-medium">Search</button>
+                            <button v-on:click="search()" class="w-full px-6 bg-indigo-600 h-12 text-white text-xl font-medium">Search</button>
                         </span>
 
                     </div>
 
-                    <div class="flex justify-evenly items-center text-2xl text-white">
+                    <div class="flex justify-evenly items-center text-lg sm:text-2xl text-white">
 
                         <label class="flex items-center">
-                            <input v-model="imageChecked" class="w-6 h-6 mr-2" type="checkbox" />
+                            <input v-model="state.imageChecked" class="w-6 h-6 mr-2" type="checkbox" />
                             Image
                         </label>
 
                         <label class="flex items-center">
-                            <input v-model="audioChecked" class="w-6 h-6 mr-2" type="checkbox" />
+                            <input v-model="state.audioChecked" class="w-6 h-6 mr-2" type="checkbox" />
                             Audio
                         </label>
 
@@ -38,69 +38,98 @@
             </div>
             
             <!-- Errors -->
-            <div v-if="errors.length" class="flex-col max-w-4xl mx-auto py-6 mt-4 px-8 bg-red-200 border border-red-500 rounded-lg shadow">
+            <div v-if="state.errors.length > 0 " class="flex-col max-w-4xl mx-auto py-6 mt-4 px-8 bg-red-200 border border-red-500 rounded-lg shadow">
                 <b>Please correct the following error(s):</b>
                 <ul>
-                    <li v-for="error in errors">{{ error }}</li>
+                    <li v-for="error in state.errors">{{ error }}</li>
                 </ul>
             </div>
             <!-- Errors -->
-
-            <!-- Search Results -->
-            <div v-else class="flex-col max-w-4xl mx-auto space-y-8 py-12">
-
-                <div v-if="searchResults.length != 0" class="flex font-semibold">
-
-                    Total Results: {{ metaData.total_hits }}
-                
-                </div>
-
-                <div class="grid grid-cols-4 gap-4">
-
-                    <div v-for="result in searchResults">
-
-                        <div class="rounded shadow-xl overflow-hidden">
-
-                            <div v-if="'links' in result">
-
-                                <img :src="result.links[0].href" class="object-cover h-48" />
-
-                            </div>
-
-                            <div v-else class="">
-
-                                <p class="px-6 py-8 text-sm h-48">{{ result.data[0].description.substring(0, 100) + '...' }}</p>
-
-                            </div>
-
-                            <router-link @click="this.searchStore.storeItem(result.data[0])" class="px-4 w-full bg-indigo-600 h-8 text-white font-medium" 
-                                :to="{ name: 'asset', params: { id: result.data[0].nasa_id }}">
-
-                                View
-
-                            </router-link>
-
-                        </div>
-    
-                    </div>
-
-                </div>
-                
-            </div>
-            <!-- Search Results -->
+            
+            <Suspense>
+                <template #default>
+                    <SearchResults/>
+                </template>
+                <template #fallback>
+                    <p>Loading...</p>
+                </template>
+            </Suspense>
+            
 
         </main>
 
 </template>
 
-<script>
+<script setup>
 
-import { useSearchStore } from '../stores/searchStore';
+import { reactive, onMounted } from 'vue';
+import { useSearchStore } from '../stores/searchStore'
+import SearchResults from './SearchResults.vue';
 
+const searchStore = useSearchStore()
+
+const state = reactive ({
+
+        errors: [],
+        imageChecked: false,
+        audioChecked: false    
+    
+})
+
+const validateForm = () => {
+
+    state.errors = []
+
+    if (searchStore.searchTerm == null || searchStore.searchTerm == "") {
+        state.errors.push("Please enter a search term");
+    }
+
+    if (state.imageChecked == false && state.audioChecked == false) {
+        state.errors.push("Please check either a image or audio");
+    }
+
+}
+
+const getMediaTypes = () => {
+
+    let mediaTypes = [];
+
+    if (state.imageChecked) {
+        mediaTypes.push("image");
+    }
+
+    if (state.audioChecked) {
+        mediaTypes.push("audio");
+    }
+
+    return mediaTypes.toString();
+}
+
+const search = async() =>  {
+
+    validateForm()
+
+    if(state.errors.length == 0) {
+
+        try {
+            const response = await axios.get("/api/search?q=" + searchStore.searchTerm + "&media_type=" + getMediaTypes())
+            searchStore.storeResults(response);
+        } catch(err) {
+            console.log('err')
+        }
+
+    }
+}
+
+
+
+/*
 export default {
 
     setup() {
         const searchStore = useSearchStore()
+
+        
 
         return {
             searchStore
@@ -117,6 +146,10 @@ export default {
             links: [],
 
         };
+    },
+    mounted() {
+
+        this.searchResults = this.searchStore.getResults();
     },
     methods: {
         checkForm() {
@@ -163,5 +196,5 @@ export default {
     },
 
 }
-
+*/
 </script>
