@@ -7,11 +7,12 @@
         <title>NASA App</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
         <style>
             body {
-                font-family: 'Nunito', sans-serif;
+                font-family: 'Poppins', sans-serif;
             }
         </style>
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -19,7 +20,9 @@
          <!-- Scripts -->
          <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
-    <body class="antialiased" id="app">
-        <search></search>
+    <body class="antialiased bg-gray-100" id="app">
+        <router-view></router-view>
     </body>
 </html>
+
+
