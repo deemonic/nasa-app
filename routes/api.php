@@ -15,5 +15,4 @@ use App\Http\Controllers\API\NasaController;
 |
 */
 Route::get('/search', [NasaController::class, 'search']);
-Route::get('/loadMore', [NasaController::class, 'load']);
 Route::get('/asset/{id}', [NasaController::class, 'show']);
