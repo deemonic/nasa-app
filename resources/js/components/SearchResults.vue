@@ -38,11 +38,6 @@
             </div>
             <!-- Search Results -->
 
-            <!-- Show More -->
-            <div class="flex justify-center mb-8">
-                <button @click="loadMore()" class="bg-gray-800 text-white px-4 py-3 text-xl">Show More</button>
-            </div>
-            <!-- Show More -->
 </template>
 
 <script setup>
@@ -57,16 +52,5 @@ onMounted (() => {
     
     searchStore.initialize()
 })
-
-const loadMore = async() =>  {
-
-
-            const response = await axios.get(searchStore.links[0].href)
-            console.log(response);
-            //searchStore.storeResults(response);
-        
-
-}
-
 
 </script>

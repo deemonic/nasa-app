@@ -22,12 +22,12 @@
                     <div class="flex justify-evenly items-center text-lg sm:text-2xl text-white">
 
                         <label class="flex items-center">
-                            <input v-model="state.imageChecked" class="w-6 h-6 mr-2" type="checkbox" />
+                            <input v-model="searchStore.imageChecked" class="w-6 h-6 mr-2" type="checkbox" />
                             Image
                         </label>
 
                         <label class="flex items-center">
-                            <input v-model="state.audioChecked" class="w-6 h-6 mr-2" type="checkbox" />
+                            <input v-model="searchStore.audioChecked" class="w-6 h-6 mr-2" type="checkbox" />
                             Audio
                         </label>
 
@@ -69,11 +69,7 @@ import SearchResults from './SearchResults.vue';
 const searchStore = useSearchStore()
 
 const state = reactive ({
-
         errors: [],
-        imageChecked: false,
-        audioChecked: false    
-    
 })
 
 const validateForm = () => {
@@ -84,7 +80,7 @@ const validateForm = () => {
         state.errors.push("Please enter a search term");
     }
 
-    if (state.imageChecked == false && state.audioChecked == false) {
+    if (searchStore.imageChecked == false && searchStore.audioChecked == false) {
         state.errors.push("Please check either a image or audio");
     }
 
@@ -94,11 +90,11 @@ const getMediaTypes = () => {
 
     let mediaTypes = [];
 
-    if (state.imageChecked) {
+    if (searchStore.imageChecked) {
         mediaTypes.push("image");
     }
 
-    if (state.audioChecked) {
+    if (searchStore.audioChecked) {
         mediaTypes.push("audio");
     }
 
@@ -121,80 +117,4 @@ const search = async() =>  {
     }
 }
 
-
-
-/*
-export default {
-
-    setup() {
-        const searchStore = useSearchStore()
-
-        
-
-        return {
-            searchStore
-        }
-    },
-    data() {
-        return {
-            searchTerm: null,
-            imageChecked: false,
-            audioChecked: false,
-            errors: [],
-            searchResults: [],
-            metaData: [],
-            links: [],
-
-        };
-    },
-    mounted() {
-
-        this.searchResults = this.searchStore.getResults();
-    },
-    methods: {
-        checkForm() {
-
-            this.errors = [];
-
-            if (this.searchTerm == null || this.searchTerm == "") {
-                this.errors.push("Please enter a search term");
-            }
-
-            if (this.imageChecked == false && this.audioChecked == false) {
-                this.errors.push("Please check either a image or audio");
-            }
-
-        },
-        getMediaTypes() {
-
-            let mediaTypes = [];
-            if (this.imageChecked) {
-                mediaTypes.push("image");
-            }
-
-            if (this.audioChecked) {
-                mediaTypes.push("audio");
-            }
-
-            return mediaTypes.toString();
-        },
-        search() {
-
-            this.checkForm();
-
-            if (this.errors.length == 0) {
-                axios.get("/api/search?q=" + this.searchTerm + "&media_type=" + this.getMediaTypes())
-                    .then((response) => {                    
-                    this.searchStore.storeResults(response.data.collection.items);
-                    this.searchResults = this.searchStore.getResults();
-                    this.metaData = response.data.collection.metadata;
-                    this.links = response.data.collection.links;
-                });
-            }
-        }
-
-    },
-
-}
-*/
 </script>
